@@ -1,15 +1,26 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import uuid
 import subprocess
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.post("/upload")
 async def upload_pcap(file: UploadFile = File(...)):
     # Validate file extension
     if not (file.filename.endswith('.pcap') or file.filename.endswith('.pcapng')):
-        raise HTTPException(status_code=422, detail="Invalid file type. Please upload a .pcap or .pcapng file.")
+        raise HTTPException(
+            status_code=422, detail="Invalid file type. Please upload a .pcap or .pcapng file.")
 
     file_ext = '.pcapng' if file.filename.endswith('.pcapng') else '.pcap'
     temp_filename = f"temp_{uuid.uuid4()}{file_ext}"
@@ -56,11 +67,13 @@ async def upload_pcap(file: UploadFile = File(...)):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Processing failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Processing failed: {str(e)}")
 
     finally:
         if os.path.exists(temp_filename):
             os.remove(temp_filename)
+
 
 def extract_protocol_lines(output: str):
     lines = output.splitlines()
