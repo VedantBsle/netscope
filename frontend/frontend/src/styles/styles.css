@@ -1,0 +1,122 @@
+/* styles.css */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* use center for true centering */
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    background-color: #1e1e1e;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.upload-form-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.dropzone {
+    border: 2px dashed #888;
+    background-color: #2e2e2e;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.upload-btn,
+.download-btn {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.download-btn {
+    background-color: #222;
+    border: 1px solid #444;
+}
+
+.status-msg {
+    margin-top: 1rem;
+}
+
+.error-msg {
+    color: red;
+    margin-top: 1rem;
+}
+
+.summary-block {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 700px;
+    text-align: left;
+}
+
+.ip-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.ip-table th,
+.ip-table td {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+}
+
+.ip-table thead {
+    background-color: #f3f3f3;
+    color: #000;
+}
+
+.card {
+    background-color: #2e2e2e;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.centered-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

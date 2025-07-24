@@ -1,10 +1,10 @@
-import React from 'react';
-import UploadForm from './components/UploadForm';
+import React from "react";
+import UploadForm from "./components/UploadForm";
+import "./styles/styles.css"; // Import the external stylesheet
 
 function App() {
   return (
-    <div>
-      <h1>Netscope: Packet Analyzer</h1>
+    <div className="container">
       <UploadForm />
     </div>
   );
