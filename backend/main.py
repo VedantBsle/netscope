@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Body
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import os
@@ -24,10 +24,6 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 
 @app.post("/upload")
 async def upload_pcap(file: UploadFile = File(...)):
-    """
-    Uploads a .pcap or .pcapng file, analyzes it, and returns protocol statistics,
-    IP conversations, and overall packet summary.
-    """
     if not (file.filename.endswith('.pcap') or file.filename.endswith('.pcapng')):
         raise HTTPException(
             status_code=422,
@@ -35,7 +31,8 @@ async def upload_pcap(file: UploadFile = File(...)):
         )
 
     file_ext = '.pcapng' if file.filename.endswith('.pcapng') else '.pcap'
-    temp_filename = os.path.join(TEMP_DIR, f"temp_{uuid.uuid4()}{file_ext}")
+    file_id = f"temp_{uuid.uuid4()}{file_ext}"
+    temp_filename = os.path.join(TEMP_DIR, file_id)
 
     try:
         with open(temp_filename, "wb") as f:
@@ -54,6 +51,7 @@ async def upload_pcap(file: UploadFile = File(...)):
             }, f, indent=2)
 
         return {
+            "file_id": file_id,  # <-- added this
             "protocols": protocols,
             "ip_conversations": ip_conversations,
             "packet_summary": packet_summary,
@@ -66,9 +64,6 @@ async def upload_pcap(file: UploadFile = File(...)):
 
 @app.get("/download/{filename}")
 def download_summary(filename: str):
-    """
-    Endpoint to download the generated JSON summary file.
-    """
     path = os.path.join(TEMP_DIR, filename)
     if os.path.exists(path):
         return FileResponse(path, media_type="application/json", filename=filename)
@@ -76,11 +71,64 @@ def download_summary(filename: str):
         raise HTTPException(status_code=404, detail="File not found")
 
 
+@app.get("/packets/{file_id}")
+def get_packet_details(file_id: str):
+    """
+    Parses individual packet details from a PCAP file using TShark.
+    Returns basic packet-level data: number, time, src/dst IP & port, protocol, length.
+    """
+    file_path = os.path.join(TEMP_DIR, file_id)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="PCAP file not found.")
+
+    try:
+        # Correct: don't use -e with -T json
+        tshark_fields = [
+            "-T", "json",
+            "-r", file_path,
+            "-Y", "ip || tcp || udp"
+        ]
+
+        command = ["tshark"] + tshark_fields
+        result = subprocess.run(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        if result.returncode != 0:
+            raise Exception(f"TShark error: {result.stderr.strip()}")
+
+        try:
+            raw_packets = json.loads(result.stdout)
+        except json.JSONDecodeError as e:
+            raise Exception(f"JSON Decode Error: {e.msg}")
+
+        packets = []
+        for pkt in raw_packets:
+            layers = pkt.get("_source", {}).get("layers", {})
+            packets.append({
+                "no": int(layers.get("frame.number", ["0"])[0]),
+                "time_ms": float(layers.get("frame.time_relative", ["0.0"])[0]),
+                "src_ip": layers.get("ip.src", [""])[0] if "ip.src" in layers else layers.get("eth.src", [""])[0],
+                "dst_ip": layers.get("ip.dst", [""])[0] if "ip.dst" in layers else layers.get("eth.dst", [""])[0],
+                "src_port": layers.get("tcp.srcport", layers.get("udp.srcport", [""]))[0],
+                "dst_port": layers.get("tcp.dstport", layers.get("udp.dstport", [""]))[0],
+                "protocol": layers.get("_ws.col.Protocol", [""])[0],
+                "length": layers.get("frame.len", [""])[0],
+                "info": layers.get("_ws.col.Info", [""])[0],
+            })
+
+        return {"packets": packets}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to extract packets: {str(e)}")
+
+
+
+
 def get_protocol_stats(pcap_file: str):
-    """
-    Parses protocol statistics using tshark's 'io,phs' feature.
-    Returns a list of protocols with packet and byte counts.
-    """
     result = subprocess.run(
         ["tshark", "-r", pcap_file, "-q", "-z", "io,phs"],
         stdout=subprocess.PIPE,
@@ -115,12 +163,16 @@ def get_protocol_stats(pcap_file: str):
 
 
 def extract_ip_conversations(pcap_file: str):
-    """
-    Extracts IP conversations using tshark's 'conv,ip' statistics.
-    Returns source/destination pairs with total byte count.
-    """
     result = subprocess.run(
-        ["tshark", "-r", pcap_file, "-q", "-z", "conv,ip"],
+        [
+            "tshark", "-r", pcap_file,
+            "-T", "fields",
+            "-e", "ip.src",
+            "-e", "ip.dst",
+            "-e", "_ws.col.Protocol",
+            "-e", "frame.len",
+            "-E", "separator=,", "-E", "occurrence=f"
+        ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
@@ -129,43 +181,30 @@ def extract_ip_conversations(pcap_file: str):
     if result.returncode != 0:
         raise Exception(f"TShark convo error: {result.stderr.strip()}")
 
-    lines = result.stdout.splitlines()
-    conversations = []
-    inside_section = False
-    for line in lines:
-        line = line.strip()
-        if line.startswith("IPv4 Conversations"):
-            inside_section = True
+    from collections import defaultdict
+    conversations = defaultdict(int)  # key = (src, dst, proto), value = total bytes
+
+    for line in result.stdout.strip().splitlines():
+        parts = line.split(",")
+        if len(parts) < 4:
             continue
-        if inside_section:
-            if not line or line.startswith("=") or "Filter" in line:
-                continue
-            if "<->" not in line:
-                continue
-            try:
-                parts = line.split("<->")
-                if len(parts) != 2:
-                    continue
-                src = parts[0].strip().split()[0]
-                rest = parts[1].strip().split()
-                dst = rest[0]
-                bytes_a_to_b = int(rest[2])
-                bytes_b_to_a = int(rest[5])
-                total_bytes = bytes_a_to_b + bytes_b_to_a
-                conversations.append({
-                    "source": src,
-                    "destination": dst,
-                    "bytes": total_bytes
-                })
-            except:
-                continue
-    return conversations
+        src, dst, proto, length = parts
+        if not src or not dst or not proto:
+            continue
+        try:
+            length = int(length)
+        except ValueError:
+            length = 0
+        conversations[(src, dst, proto)] += length
+
+    return [
+        {"source": src, "destination": dst, "protocol": proto, "bytes": total_bytes}
+        for (src, dst, proto), total_bytes in conversations.items()
+    ]
+
 
 
 def get_packet_summary(pcap_file: str):
-    """
-    Gets a basic summary of total packets and total bytes using tshark 'io,stat,0'.
-    """
     result = subprocess.run(
         ["tshark", "-r", pcap_file, "-q", "-z", "io,stat,0"],
         stdout=subprocess.PIPE,

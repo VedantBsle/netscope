@@ -133,7 +133,7 @@ function UploadForm() {
             )}
 
             {/* IP Conversations */}
-            {filteredResponse?.ip_conversations?.length > 0 && (
+            {filteredResponse && (
                 <div className="summary-block card">
                     <h3>IP Conversations</h3>
                     <table className="ip-table">
@@ -141,21 +141,33 @@ function UploadForm() {
                             <tr>
                                 <th>Source</th>
                                 <th>Destination</th>
+                                <th>Protocol</th> {/* NEW */}
                                 <th>Bytes</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredResponse.ip_conversations.map((conv, index) => (
-                                <tr key={index}>
-                                    <td>{conv.source}</td>
-                                    <td>{conv.destination}</td>
-                                    <td>{conv.bytes}</td>
+                            {filteredResponse.ip_conversations && filteredResponse.ip_conversations.length > 0 ? (
+                                filteredResponse.ip_conversations.map((conv, index) => (
+                                    <tr key={index}>
+                                        <td>{conv.source}</td>
+                                        <td>{conv.destination}</td>
+                                        <td>{conv.protocol}</td> {/* NEW */}
+                                        <td>{conv.bytes}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" style={{ textAlign: "center", color: "#aaa" }}>
+                                        No matching conversations
+                                    </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
             )}
+
+
 
             {/* Download Filtered JSON */}
             {filteredResponse && (
