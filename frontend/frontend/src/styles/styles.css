@@ -1,122 +1,349 @@
-/* styles.css */
+/* === Reset & Base === */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color: #1e1e1e;
     color: #ffffff;
+    line-height: 1.6;
 }
 
+/* === Root Container === */
 #root {
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    /* use center for true centering */
-    min-height: 100vh;
     padding: 2rem;
-}
-
-.container {
     width: 100%;
-    max-width: 900px;
-    background-color: #1e1e1e;
+    overflow: hidden;
 }
 
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #1e1e1e;
-    color: white;
-}
-
+/* === Main Form Container === */
 .upload-form-container {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    width: 100%;
     max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+/* === Title === */
+.title {
+    font-size: 2.5rem;
+    margin: 0;
+    text-align: center;
+    color: #ffffff;
+    /* Bright white for clarity */
+    font-weight: 600;
+    width: 100%;
+}
+
+/* === Dropzone === */
+.dropzone {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    border: 2px dashed #888;
+    border-radius: 12px;
+    background-color: #2e2e2e;
+    color: #ddd;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
     margin: 0 auto;
 }
 
-.title {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    text-align: center;
+.dropzone:hover {
+    border-color: #FF7F00;
+    /* on hover */
+    background-color: #333;
 }
 
-.dropzone {
-    border: 2px dashed #888;
-    background-color: #2e2e2e;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
+.dropzone p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    color: #bbb;
 }
 
-.upload-btn,
-.download-btn {
-    background-color: #444;
+/* === Buttons === */
+.upload-btn {
+    background-color: #FF7F00;
+    /* primary button */
     color: white;
     border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 5px;
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
     cursor: pointer;
-    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin: 0 auto;
+    box-shadow: 0 2px 6px rgba(255, 127, 0, 0.2);
+}
+
+.upload-btn:hover {
+    background-color: #E67300;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 127, 0, 0.3);
 }
 
 .download-btn {
     background-color: #222;
-    border: 1px solid #444;
+    color: white;
+    border: 1px solid #FF7F00;
+    /* border */
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin: 0 auto;
 }
 
-.status-msg {
-    margin-top: 1rem;
+.download-btn:hover {
+    background-color: #333;
+    border-color: #FFA54D;
+    /*on hover */
+}
+
+/* === Status Messages === */
+.status-msg,
+.error-msg {
+    font-size: 0.95rem;
+    margin: 0.5rem 0;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
 }
 
 .error-msg {
-    color: red;
-    margin-top: 1rem;
+    color: #ff4444;
 }
 
-.summary-block {
-    margin-top: 2rem;
+/* === Card Wrapper === */
+.card {
     width: 100%;
     max-width: 700px;
-    text-align: left;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background-color: #2a2a2a;
+    /* Slightly softer */
+    border-radius: 12px;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 1px 2px rgba(255, 127, 0, 0.05);
+    /* Subtle orange glow hint */
+    border: 1px solid #3a3a3a;
+    transition: box-shadow 0.3s ease;
 }
 
+.card:hover {
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.25),
+        0 2px 6px rgba(255, 127, 0, 0.1);
+}
+
+/* === Summary Block === */
+.summary-block {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* === Table === */
 .ip-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .ip-table th,
 .ip-table td {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
+    padding: 0.7rem;
+    text-align: left;
+    border-bottom: 1px solid #444;
 }
 
-.ip-table thead {
-    background-color: #f3f3f3;
-    color: #000;
+.ip-table th {
+    background-color: #3a3a3a;
+    color: #fff;
+    font-weight: 600;
 }
 
-.card {
-    background-color: #2e2e2e;
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.ip-table tr:hover {
+    background-color: #333;
 }
 
-.centered-section {
+/* === Chart Container === */
+.recharts-responsive-container {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+/* ===Gentle Fade-In === */
+.upload-form-container>* {
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.upload-form-container>*:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.upload-form-container>*:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.upload-form-container>*:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.upload-form-container>*:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.upload-form-container>*:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.upload-form-container>*:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.upload-form-container>*:nth-child(7) {
+    animation-delay: 0.7s;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === App Container === */
+.app-container {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #1e1e1e;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* === Site Header === */
+.site-header {
+    width: 100%;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background-color: #222;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    color: #FF7F00;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.site-subtitle {
+    margin: 0.5rem 0 0;
+    font-size: 1.1rem;
+    color: #aaa;
+    font-weight: 400;
+}
+
+/* Logo Button */
+.logo-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    width: fit-content;
+    outline: none;
+}
+
+.logo-button h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    color: #FF7F00;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.logo-button:hover h1,
+.logo-button:focus h1 {
+    color: #FF9933;
+    text-shadow: 0 0 8px rgba(255, 127, 0, 0.2);
+}
+
+/*Skeleton Loader*/
+.skeleton-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem;
+    gap: 1.5rem;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.skeleton-header {
+    width: 60%;
+    max-width: 300px;
+    height: 40px;
+    background: linear-gradient(90deg, #2e2e2e 25%, #3a3a3a 50%, #2e2e2e 75%);
+    background-size: 200% 100%;
+    border-radius: 12px;
+    animation: shimmer 1.8s infinite linear;
+}
+
+.skeleton-content {
+    width: 90%;
+    max-width: 500px;
+    height: 200px;
+    background: linear-gradient(90deg, #2e2e2e 25%, #3a3a3a 50%, #2e2e2e 75%);
+    background-size: 200% 100%;
+    border-radius: 12px;
+    animation: shimmer 1.8s infinite linear;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }

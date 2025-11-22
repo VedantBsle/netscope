@@ -1,0 +1,158 @@
+{
+  "protocols": [
+    {
+      "protocol": "eth",
+      "packets": 401,
+      "bytes": 31621
+    },
+    {
+      "protocol": "llc",
+      "packets": 115,
+      "bytes": 8950
+    },
+    {
+      "protocol": "stp",
+      "packets": 101,
+      "bytes": 6060
+    },
+    {
+      "protocol": "dtp",
+      "packets": 7,
+      "bytes": 420
+    },
+    {
+      "protocol": "cdp",
+      "packets": 7,
+      "bytes": 2470
+    },
+    {
+      "protocol": "ip",
+      "packets": 255,
+      "bytes": 20811
+    },
+    {
+      "protocol": "eigrp",
+      "packets": 44,
+      "bytes": 3256
+    },
+    {
+      "protocol": "udp",
+      "packets": 197,
+      "bytes": 16013
+    },
+    {
+      "protocol": "db-lsp-disc",
+      "packets": 7,
+      "bytes": 1218
+    },
+    {
+      "protocol": "dns",
+      "packets": 190,
+      "bytes": 14795
+    },
+    {
+      "protocol": "tcp",
+      "packets": 1,
+      "bytes": 66
+    },
+    {
+      "protocol": "icmp",
+      "packets": 13,
+      "bytes": 1476
+    },
+    {
+      "protocol": "dns",
+      "packets": 3,
+      "bytes": 336
+    },
+    {
+      "protocol": "loop",
+      "packets": 21,
+      "bytes": 1260
+    },
+    {
+      "protocol": "data",
+      "packets": 21,
+      "bytes": 1260
+    },
+    {
+      "protocol": "arp",
+      "packets": 10,
+      "bytes": 600
+    },
+    {
+      "protocol": "isl",
+      "packets": 7,
+      "bytes": 630
+    },
+    {
+      "protocol": "eth",
+      "packets": 7,
+      "bytes": 630
+    },
+    {
+      "protocol": "llc",
+      "packets": 7,
+      "bytes": 630
+    },
+    {
+      "protocol": "dtp",
+      "packets": 7,
+      "bytes": 630
+    }
+  ],
+  "ip_conversations": [
+    {
+      "source": "10.1.1.251",
+      "destination": "224.0.0.10",
+      "protocol": "EIGRP",
+      "bytes": 3256
+    },
+    {
+      "source": "172.16.0.1",
+      "destination": "172.16.0.255",
+      "protocol": "DB-LSP-DISC/JSON",
+      "bytes": 1218
+    },
+    {
+      "source": "10.1.1.1",
+      "destination": "10.1.1.254",
+      "protocol": "DNS",
+      "bytes": 13115
+    },
+    {
+      "source": "10.1.1.1",
+      "destination": "10.1.1.100",
+      "protocol": "TCP",
+      "bytes": 66
+    },
+    {
+      "source": "10.1.1.254",
+      "destination": "10.1.1.1",
+      "protocol": "DNS",
+      "bytes": 1680
+    },
+    {
+      "source": "10.1.1.1",
+      "destination": "10.1.1.254",
+      "protocol": "ICMP",
+      "bytes": 336
+    },
+    {
+      "source": "10.1.1.254",
+      "destination": "10.1.1.100",
+      "protocol": "ICMP",
+      "bytes": 570
+    },
+    {
+      "source": "10.1.1.100",
+      "destination": "10.1.1.254",
+      "protocol": "ICMP",
+      "bytes": 570
+    }
+  ],
+  "packet_summary": {
+    "total_packets": 408,
+    "total_bytes": 32251
+  }
+}

@@ -6,9 +6,10 @@ import uuid
 import subprocess
 import json
 
+
 app = FastAPI()
 
-# Allow CORS for all origins (adjust in production if needed)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,11 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Temporary directory for uploads
+# Temporary directory
 TEMP_DIR = "temp_uploads"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
-
+#upload-endpoint
 @app.post("/upload")
 async def upload_pcap(file: UploadFile = File(...)):
     if not (file.filename.endswith('.pcap') or file.filename.endswith('.pcapng')):
@@ -51,7 +52,7 @@ async def upload_pcap(file: UploadFile = File(...)):
             }, f, indent=2)
 
         return {
-            "file_id": file_id,  # <-- added this
+            "file_id": file_id,  #
             "protocols": protocols,
             "ip_conversations": ip_conversations,
             "packet_summary": packet_summary,
@@ -61,16 +62,47 @@ async def upload_pcap(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Processing failed: {str(e)}")
 
-
+#downloadendpoint
 @app.get("/download/{filename}")
 def download_summary(filename: str):
     path = os.path.join(TEMP_DIR, filename)
-    if os.path.exists(path):
-        return FileResponse(path, media_type="application/json", filename=filename)
-    else:
+    if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="File not found")
 
+    try:
+        
+        with open(path, "r") as f:
+            packets = json.load(f)
 
+        
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["No", "Time", "Source", "Destination", "Protocol", "Length", "Info"])
+
+        for pkt in packets:
+            layers = pkt.get("_source", {}).get("layers", {})
+            writer.writerow([
+                layers.get("frame.number", [""])[0],
+                layers.get("frame.time_relative", [""])[0],
+                layers.get("ip.src", [""])[0] if "ip.src" in layers else "",
+                layers.get("ip.dst", [""])[0] if "ip.dst" in layers else "",
+                layers.get("_ws.col.Protocol", [""])[0],
+                layers.get("frame.len", [""])[0],
+                layers.get("_ws.col.Info", [""])[0],
+            ])
+
+        output.seek(0)
+
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename={filename.replace('.json', '.csv')}"}
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate CSV: {str(e)}")
+
+#packet-details-endpoint
 @app.get("/packets/{file_id}")
 def get_packet_details(file_id: str):
     """
@@ -82,7 +114,7 @@ def get_packet_details(file_id: str):
         raise HTTPException(status_code=404, detail="PCAP file not found.")
 
     try:
-        # Correct: don't use -e with -T json
+        
         tshark_fields = [
             "-T", "json",
             "-r", file_path,
@@ -182,7 +214,7 @@ def extract_ip_conversations(pcap_file: str):
         raise Exception(f"TShark convo error: {result.stderr.strip()}")
 
     from collections import defaultdict
-    conversations = defaultdict(int)  # key = (src, dst, proto), value = total bytes
+    conversations = defaultdict(int)  # key = (src, dst, proto)
 
     for line in result.stdout.strip().splitlines():
         parts = line.split(",")

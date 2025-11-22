@@ -1,0 +1,186 @@
+{
+  "protocols": [
+    {
+      "protocol": "eth",
+      "packets": 938,
+      "bytes": 837214
+    },
+    {
+      "protocol": "ip",
+      "packets": 938,
+      "bytes": 837214
+    },
+    {
+      "protocol": "udp",
+      "packets": 52,
+      "bytes": 9287
+    },
+    {
+      "protocol": "dns",
+      "packets": 52,
+      "bytes": 9287
+    },
+    {
+      "protocol": "tcp",
+      "packets": 885,
+      "bytes": 827703
+    },
+    {
+      "protocol": "tls",
+      "packets": 324,
+      "bytes": 273531
+    },
+    {
+      "protocol": "tcp.segments",
+      "packets": 126,
+      "bytes": 148387
+    },
+    {
+      "protocol": "tls",
+      "packets": 82,
+      "bytes": 117523
+    },
+    {
+      "protocol": "icmp",
+      "packets": 1,
+      "bytes": 224
+    },
+    {
+      "protocol": "dns",
+      "packets": 1,
+      "bytes": 224
+    }
+  ],
+  "ip_conversations": [
+    {
+      "source": "192.168.4.120",
+      "destination": "192.168.4.1",
+      "protocol": "DNS",
+      "bytes": 2321
+    },
+    {
+      "source": "192.168.4.1",
+      "destination": "192.168.4.120",
+      "protocol": "DNS",
+      "bytes": 6966
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "104.26.10.240",
+      "protocol": "TCP",
+      "bytes": 1182
+    },
+    {
+      "source": "104.26.10.240",
+      "destination": "192.168.4.120",
+      "protocol": "TCP",
+      "bytes": 6980
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "104.26.10.240",
+      "protocol": "SSL",
+      "bytes": 5816
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "104.26.10.240",
+      "protocol": "TLSv1.2",
+      "bytes": 2232
+    },
+    {
+      "source": "104.26.10.240",
+      "destination": "192.168.4.120",
+      "protocol": "TLSv1.3",
+      "bytes": 10837
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "104.26.10.240",
+      "protocol": "TLSv1.3",
+      "bytes": 1426
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "172.67.153.181",
+      "protocol": "TCP",
+      "bytes": 2562
+    },
+    {
+      "source": "172.67.153.181",
+      "destination": "192.168.4.120",
+      "protocol": "TCP",
+      "bytes": 137412
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "172.67.153.181",
+      "protocol": "SSL",
+      "bytes": 2908
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "172.67.153.181",
+      "protocol": "TLSv1.2",
+      "bytes": 1116
+    },
+    {
+      "source": "172.67.153.181",
+      "destination": "192.168.4.120",
+      "protocol": "TLSv1.3",
+      "bytes": 122598
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "172.67.153.181",
+      "protocol": "TLSv1.3",
+      "bytes": 10414
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "192.168.4.1",
+      "protocol": "ICMP",
+      "bytes": 224
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "151.101.194.17",
+      "protocol": "TCP",
+      "bytes": 3168
+    },
+    {
+      "source": "151.101.194.17",
+      "destination": "192.168.4.120",
+      "protocol": "TCP",
+      "bytes": 402868
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "151.101.194.17",
+      "protocol": "SSL",
+      "bytes": 2884
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "151.101.194.17",
+      "protocol": "TLSv1.2",
+      "bytes": 1159
+    },
+    {
+      "source": "151.101.194.17",
+      "destination": "192.168.4.120",
+      "protocol": "TLSv1.3",
+      "bytes": 107745
+    },
+    {
+      "source": "192.168.4.120",
+      "destination": "151.101.194.17",
+      "protocol": "TLSv1.3",
+      "bytes": 4396
+    }
+  ],
+  "packet_summary": {
+    "total_packets": 938,
+    "total_bytes": 837214
+  }
+}

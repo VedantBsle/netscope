@@ -62,11 +62,40 @@ function UploadForm() {
         e.preventDefault();
     };
 
-    const downloadFilteredJSON = () => {
+    // CSV download function
+    const downloadFilteredCSV = () => {
+        if (!filteredResponse) return;
+
+        let csv = "";
+
+        // Summary
+        if (filteredResponse.packet_summary) {
+            csv += "Summary,Total Packets,Total Bytes\n";
+            csv += `Summary,${filteredResponse.packet_summary.total_packets},${filteredResponse.packet_summary.total_bytes}\n\n`;
+        }
+
+        // Protocols
+        if (filteredResponse.protocols) {
+            csv += "Protocol,Packets,Bytes\n";
+            filteredResponse.protocols.forEach(proto => {
+                csv += `${proto.protocol},${proto.packets},${proto.bytes}\n`;
+            });
+            csv += "\n";
+        }
+
+        // IP Conversations
+        if (filteredResponse.ip_conversations) {
+            csv += "Source,Destination,Protocol,Bytes\n";
+            filteredResponse.ip_conversations.forEach(conv => {
+                csv += `${conv.source},${conv.destination},${conv.protocol},${conv.bytes}\n`;
+            });
+            csv += "\n";
+        }
+
         const element = document.createElement('a');
-        const file = new Blob([JSON.stringify(filteredResponse, null, 2)], { type: 'application/json' });
+        const file = new Blob([csv], { type: 'text/csv' });
         element.href = URL.createObjectURL(file);
-        element.download = 'filtered_summary.json';
+        element.download = 'filtered_summary.csv';
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
@@ -74,7 +103,6 @@ function UploadForm() {
 
     return (
         <div className="upload-form-container">
-            <h1 className="title">PCAP-Viz: Packet Analyzer</h1>
 
             {/* Dropzone */}
             <div
@@ -141,7 +169,7 @@ function UploadForm() {
                             <tr>
                                 <th>Source</th>
                                 <th>Destination</th>
-                                <th>Protocol</th> {/* NEW */}
+                                <th>Protocol</th>
                                 <th>Bytes</th>
                             </tr>
                         </thead>
@@ -151,7 +179,7 @@ function UploadForm() {
                                     <tr key={index}>
                                         <td>{conv.source}</td>
                                         <td>{conv.destination}</td>
-                                        <td>{conv.protocol}</td> {/* NEW */}
+                                        <td>{conv.protocol}</td>
                                         <td>{conv.bytes}</td>
                                     </tr>
                                 ))
@@ -167,13 +195,11 @@ function UploadForm() {
                 </div>
             )}
 
-
-
-            {/* Download Filtered JSON */}
+            {/*  Download Filtered CSV */}
             {filteredResponse && (
                 <div className="centered-section">
-                    <button className="download-btn" onClick={downloadFilteredJSON}>
-                        Download Filtered JSON
+                    <button className="download-btn" onClick={downloadFilteredCSV}>
+                        Download Filtered CSV
                     </button>
                 </div>
             )}
